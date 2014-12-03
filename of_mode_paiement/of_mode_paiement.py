@@ -1,5 +1,4 @@
 from openerp.osv import fields, osv
-# import pooler
 import time
 
 class of_payment_mode(osv.osv):
@@ -42,6 +41,8 @@ class of_account_voucher(osv.osv):
     }
     
     def onchange_mode(self, cr, uid, ids, mode_id, journal_id, line_ids, tax_id, partner_id, date, amount, ttype, company_id, context=None):
+        if not mode_id:
+            return False
         res = {}
         new_journal_id = self.pool.get('payment.mode').browse(cr,uid,mode_id).journal.id
         if new_journal_id != journal_id:
@@ -130,15 +131,15 @@ class account_statement_from_invoice_lines(osv.osv_memory):
             voucher_obj.write(cr, uid, voucher_id, {'amount':amount_res}, context=context)
 
             if line.journal_id.type == 'sale':
-                type = 'customer'
+                line_type = 'customer'
             elif line.journal_id.type == 'purchase':
-                type = 'supplier'
+                line_type = 'supplier'
             else:
-                type = 'general'
+                line_type = 'general'
             statement_line_obj.create(cr, uid, {
                 'name': line.name or '?',
                 'amount': amount_res if amount >= 0 else -amount_res,
-                'type': type,
+                'type': line_type,
                 'partner_id': line.partner_id.id,
                 'account_id': line.account_id.id,
                 'statement_id': statement_id,
