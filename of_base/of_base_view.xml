@@ -1,0 +1,29 @@
+<openerp>
+    <data>
+    <!--##########################################################################################################################-->
+    <!--#############################################_____Fiche Produit______#####################################################-->
+    <!--##########################################################################################################################-->
+    
+        <record id="of_view_mail_mail_tree" model="ir.ui.view">
+        	<field name="name">of.mail.mail.tree</field>
+            <field name="model">mail.mail</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="mail.view_mail_tree" />
+            <field name="arch" type="xml">
+            	<field name="recipient_ids" position="replace"/>
+                <field name="subject" position="after">
+                    <field name="email_from"/>
+                    <field name="email_to"/>
+	                <field name="recipient_ids"/>
+				</field>
+                <field name="state" position="replace">
+                	<field name="state"/>
+                </field>
+            </field>
+        </record>
+        
+        <record id="mail.action_view_mail_mail" model="ir.actions.act_window">
+        	<field name="context">{}</field>
+        </record>
+    </data>
+</openerp>

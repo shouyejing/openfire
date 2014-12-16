@@ -1,0 +1,7 @@
+-
+  I update existing translation for rml_footer2.
+-
+  !python {model: ir.translation}: |
+    ids = self.search(cr, uid, [('name','=','res.company,rml_footer2'),('type','=','field'),('res_id','=',0)])
+    if ids:
+        self.write(cr, uid, ids, {'value':'Pied de page 2e ligne'})

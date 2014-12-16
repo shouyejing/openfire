@@ -10,7 +10,6 @@ class of_payment_mode(osv.osv):
                                selection=[('sale', 'Sale'),('sale_refund','Sale Refund'), ('purchase', 'Purchase'), ('purchase_refund','Purchase Refund'),
                                           ('cash', 'Cash'), ('bank', 'Bank and Checks'), ('general', 'General'), ('situation', 'Opening/Closing Situation')])
     }
-of_payment_mode()
 
 class of_account_voucher(osv.osv):
     _name = 'account.voucher'
@@ -50,7 +49,6 @@ class of_account_voucher(osv.osv):
             res['value']['journal_id'] = new_journal_id
         return res
     
-of_account_voucher()
 
 class account_statement_from_invoice_lines(osv.osv_memory):
     _inherit = 'account.statement.from.invoice.lines'
@@ -149,5 +147,3 @@ class account_statement_from_invoice_lines(osv.osv_memory):
             }, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
-
-account_statement_from_invoice_lines()

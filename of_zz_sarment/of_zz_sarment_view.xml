@@ -11,7 +11,7 @@
             <field name="model">of.archive</field>
             <field name="arch" type="xml">
                 <form string="Archives">
-                	<group>
+                	<sheet>
                 	<group col="4">
                         <separator string="Client" colspan="4"/>
                         <field name="partner_id" colspan="3" select="1"/>
@@ -20,14 +20,14 @@
                         <field name="fnum" select="1"/>
                         <field name="ftype" select="1"/>
                         <field name="fdate" select="1"/>
+                        <field name="file" filename="file_name" colspan="4"/>
                         <field name="file_name" invisible="1"/>
-                        <field name="file" filename="file_name"/>
                         <separator string="Prix" colspan="4"/>
                         <field name="pvttc"/>
                         <field name="pvht"/>
                         <field name="tva"/>
                     </group>
-                    </group>
+                    </sheet>
                 </form>
             </field>
         </record>
