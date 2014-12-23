@@ -1,7 +1,7 @@
 from openerp.osv import fields, osv
 import time
 
-class of_payment_mode(osv.osv):
+class of_payment_mode(osv.Model):
     _name= 'payment.mode'
     _inherit = 'payment.mode'
 
@@ -11,7 +11,7 @@ class of_payment_mode(osv.osv):
                                           ('cash', 'Cash'), ('bank', 'Bank and Checks'), ('general', 'General'), ('situation', 'Opening/Closing Situation')])
     }
 
-class of_account_voucher(osv.osv):
+class of_account_voucher(osv.Model):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
     _order = "date desc, id desc"

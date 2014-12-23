@@ -19,32 +19,16 @@
 #
 ##############################################################################
 
-{
-    "name" : "OpenFire Base",
-    "version" : "1.1",
-    "author" : "OpenFire",
-    'complexity': "easy",
-    "description" : """
-Personnalisations des fonctions de base OpenERP
-- Retrait du recalcul automatique du pied de page de la société à la modification d'un des champs d'adresse.
-- Modification du pied de page des comptes bancaires calculé automatiquement en pied de page secondaire à saisir.
-- Autorisation de générer les boutons d'action d'envoi d'emails depuis les modèles d'emails pour les administrateurs.
-- Ajout des colonnes destinataire et partenaire dans la vue liste des emails.
-    """
-,
-    "website" : "www.openfire.fr",
-    "depends" : ["base","mail"],
-    "category" : "OpenFire",
-    "sequence": 100,
-    "init_xml" : [
-        'of_base_init.yml',
-    ],
-    "update_xml" : [
-        'of_base_view.xml',
-    ],
-    'installable': True,
-    'application': False,
-    'auto_install': False,
-}
+from openerp.osv import fields, osv
+
+class account_fiscalyear_close_state(osv.osv_memory):
+    _name = "account.fiscalyear.close.state"
+    _inherit = "account.fiscalyear.close.state"
+
+    _columns = {
+        'confirm' : fields.boolean('Je prends note', required=True),
+    }
+
+account_fiscalyear_close_state()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

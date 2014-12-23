@@ -20,30 +20,10 @@
 #
 ##############################################################################
 
-{
-        "name" : "OpenFire / Module Le Sarment",
-        "version" : "1.1",
-        "author" : "OpenFire",
-        "website" : "http://www.openfire.fr",
-        "category" : "Generic Modules/Others",
-        "description": """ Module spécifique pour Le Sarment
-Mise en majuscules des noms, prénoms et adresse des prospects.
-Mise en minuscules des email des prospects.
-Formatage des numéros de téléphone de la forme avec des espaces blancs.
-Affichage des auteurs des prospects et des magasins.
-Protection contre la modification du type d'une relance appartenant à un autre utilisateur.
-Ajouter les archives.
-""",
-        "depends" : [ ],
-        "init_xml" : [ ],
-        "demo_xml" : [ ],
-        "update_xml" : [
-#            'security/ir.model.access.csv',
-            'of_zz_sarment_view.xml'
-        ],
-        "installable": True,
-        'active': False,
-}
 
+import account_fiscalyear_close_state
+import account_fiscalyear_close
+import wizard_invoice_group
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

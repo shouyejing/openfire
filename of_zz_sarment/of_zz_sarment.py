@@ -23,7 +23,7 @@
 from openerp.osv import fields, osv
 
 
-class of_archive(osv.osv):
+class of_archive(osv.Model):
     _name = "of.archive"
     _description = "Archive"
     

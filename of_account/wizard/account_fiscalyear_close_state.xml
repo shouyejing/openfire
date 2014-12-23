@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="of_view_account_fiscalyear_close_state" model="ir.ui.view">
+            <field name="name">account.fiscalyear.close.state.form</field>
+            <field name="model">account.fiscalyear.close.state</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.view_account_fiscalyear_close_state"/>
+            <field name="arch" type="xml">
+                <field name="fy_id" position="after">
+                    <label string ="Attention : La clôture d'un exercice est irréversible." colspan="2"/>
+                    <label string ="Assurez-vous d'avoir généré les écritures d'ouverture pour l'année suivante." colspan="2"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
