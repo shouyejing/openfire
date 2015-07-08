@@ -22,21 +22,24 @@
 from openerp.osv import fields, osv
 from openerp import SUPERUSER_ID
 
-class res_company(osv.Model):
-    _name = "res.company"
-    _inherit = "res.company"
+# Migration : champs rml_footer2 n'existe plus dans Odoo 8
+#class res_company(osv.Model):
+#     _name = "res.company"
+#     _inherit = "res.company"
+# 
+#     _columns = {
+#         'rml_footer2': fields.char("Pied de page 2e ligne", size=200),
+#     }
+# 
+#     def on_change_header(self, cr, uid, ids, phone, email, fax, website, reg=False, context=None):
+#         return {}
 
-    _columns = {
-        'rml_footer2': fields.char("Pied de page 2e ligne", size=200),
-    }
-
-    def on_change_header(self, cr, uid, ids, phone, email, fax, website, reg=False, context=None):
-        return {}
-
+# Migration ok
 class email_template(osv.Model):
     _inherit = 'email.template'
     _name = "email.template"
 
+    # Restreint la possibilité d'ajouter/de supprimer une action d'un modèle de courriel aux seuls utilisateurs qui ont les droits de configuration 
     def create_action(self, cr, uid, ids, context=None):
 #        data_obj = self.pool['ir.model.data']
 #        user_obj = self.pool['res.user']

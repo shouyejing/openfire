@@ -1,5 +1,1 @@
 
-#. module: base
-#: field:res.company,rml_footer2:0
-msgid "Bank Accounts Footer"
-msgstr "Pied de page 2e ligne"
