@@ -26,17 +26,15 @@
     'complexity': "easy",
     "description" : """
 Personnalisations des fonctions de base Odoo :
-- Retrait du recalcul automatique du pied de page de la société lors de la modification d'un des champs d'adresse.
-- Modification du pied de page des comptes bancaires calculé automatiquement en pied de page secondaire à saisir.
 - Autorisation de générer les boutons d'action d'envoi d'emails depuis les modèles d'emails pour les administrateurs.
-- Ajout des colonnes destinataire et partenaire dans la vue liste des emails.
+- Ajout des colonnes destinataire et partenaire dans la vue liste des emails
+- Ajout onglet historique dans formulaire partenaire
 """,
     "website" : "www.openfire.fr",
     "depends" : ["base", "email_template", "product"],
     "category" : "OpenFire",
     "sequence": 100,
     "init_xml" : [
-        'of_base_init.yml',
     ],
     "update_xml" : [
         'of_base_view.xml',

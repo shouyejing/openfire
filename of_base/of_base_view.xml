@@ -25,5 +25,19 @@
         <record id="mail.action_view_mail_mail" model="ir.actions.act_window">
         	<field name="context">{}</field>
         </record>
+        
+        <!-- Ajouter onglet "Historique" dans formulaire partenaire -->
+        <record id="of_base_partner_historique_form" model="ir.ui.view">
+            <field name="name">of.base.partner.historique.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <page name="sales_purchases" position="after">
+   					<page name="historique" string="Historique">
+   					</page>
+		        </page>
+            </field>
+        </record>
+
     </data>
 </openerp>
