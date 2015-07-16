@@ -59,9 +59,9 @@
             <field name="view_id" ref="of_zz_sarment_arv_tree_view"/>
         </record>
         
-        <menuitem action="action_of_zz_sarment_arv_tree" id="menu_of_zz_sarment_arv" name="Archives" sequence="7"/>
+        <menuitem action="action_of_zz_sarment_arv_tree" id="menu_of_zz_sarment_arv" name="Archives" parent="base.menu_sales" sequence="7"/>
         
-        <!-- Ajouter le lien Archive dans l'historique du partenaire -->
+        <!-- Ajouter le lien Archives dans l'historique du partenaire -->
         <record id="of_zz_sarment_view_partner_form" model="ir.ui.view">
             <field name="name">of.sarment.partner.form</field>
             <field name="model">res.partner</field>
