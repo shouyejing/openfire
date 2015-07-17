@@ -17,7 +17,7 @@
             </field>
         </record>
         
-        <!-- Ventes/Clients/Pistes Remplacement champs courriel et tél par CP et ville-->
+        <!-- Ventes/Clients/Pistes Remplacement champs courriel et tél par CP et ville -->
         <record id="crm_lead_tree" model="ir.ui.view">
             <field name="name">crm.lead.tree</field>
             <field name="model">crm.lead</field>

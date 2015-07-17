@@ -5,8 +5,12 @@
         "author" : "OpenFire",
         "website" : "www.openfire.fr",
         "category" : "OpenFire",
-        "description": """Module specifique de la base OpenFire 
-- Affichage de la description des factures dans la vue liste, remplace le champ origine""",
+        "description": """
+Module spécifique de la base OpenFire
+
+- Affichage de la description des factures dans la vue liste et supprime le champ origine
+- Ventes/Clients/Pistes : remplacement champ courriel par CP et ville
+""",
         "depends" : [ "account", "crm"],
         "init_xml" : [ ],
         "demo_xml" : [ ],
