@@ -22,7 +22,6 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
-# Migration from osv import fields, osv
 from openerp import netsvc
 import time
 import unicodedata

@@ -36,7 +36,7 @@ Personnalisations des fonctions de base Odoo :
     "sequence": 100,
     "init_xml" : [
     ],
-    "update_xml" : [
+    "data" : [
         'of_base_view.xml',
         'wizard/wizard_change_active_product.xml'
     ],

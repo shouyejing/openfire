@@ -15,11 +15,11 @@
 SAV pour Winterhalter
 """,
         "depends" : [
-            # MT 'of_crm_helpdesk'
+            # MG 'of_crm_helpdesk'
             'crm_helpdesk',
         ],
         "demo_xml" : [ ],
-        "update_xml" : [
+        "data" : [
             'security/ir.model.access.csv',
             'of_zz_winterhalter_view.xml',
         ],

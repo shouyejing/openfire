@@ -14,7 +14,7 @@ Module spécifique de la base OpenFire
         "depends" : [ "account", "crm"],
         "init_xml" : [ ],
         "demo_xml" : [ ],
-        "update_xml" : [ "of_zz_openfire_view.xml" ],
+        "data" : [ "of_zz_openfire_view.xml" ],
         "installable": True,
         'active': False,
 }

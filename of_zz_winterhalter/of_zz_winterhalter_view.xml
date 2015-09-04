@@ -47,7 +47,7 @@
 	            <form>
 	            	<group string="Client">
 		                <field name="client_id"/>
-		                <field name="site_adresse_id"/>
+		                <field name="site_adresse_id" context="{'show_address_only': True}"/>
 		                <field name="tel_site_id"/>
 		            </group>
 			            <group>
@@ -59,7 +59,7 @@
 			            <group string="Pose">
 			           		<field name="revendeur_id"/>
 			                <field name="installateur_id"/>
-			                <field name="installateur_adresse_id"/>             
+			                <field name="installateur_adresse_id" context="{'show_address_only': True}"/>             
 			            </group>
 		            </group>
 		            <group>

@@ -19,7 +19,7 @@
             'of_init.xml',
         ],
         "demo_xml" : [ ],
-        "update_xml" : [
+        "data" : [
             'security/ir.model.access.csv',
             'of_mode_paiement_view.xml',
             'of_mode_paiement_edi_view.xml',
