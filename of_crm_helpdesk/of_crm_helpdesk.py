@@ -197,7 +197,8 @@ class crm_helpdesk(osv.Model):
             'shipping_except': "Exception d'envoi",
             'invoice_except': 'Incident de facturation',
             'done': u'Termin\u00E9',
-            'cancel': u'Annul\u00E9e'}
+            'cancel': u'Annul\u00E9e',
+            'sent': u'Envoyé'}
         state_porder_dict = {
             'draft': 'Demandes de prix',
             'wait': 'En attente',
