@@ -1,9 +1,7 @@
 <openerp>
     <data>
-    <!--##########################################################################################################################-->
-    <!--#############################################_____Fiche Produit______#####################################################-->
-    <!--##########################################################################################################################-->
-    
+
+ 		<!-- Ajouter des champs à la liste des courriels --> 
         <record id="of_view_mail_mail_tree" model="ir.ui.view">
         	<field name="name">of.mail.mail.tree</field>
             <field name="model">mail.mail</field>
@@ -17,7 +15,7 @@
 	                <field name="recipient_ids"/>
 				</field>
                 <field name="state" position="replace">
-                	<field name="state"/>
+                	<field name="state"/> <!-- Rendre champs visible -->
                 </field>
             </field>
         </record>
@@ -36,6 +34,19 @@
    					<page name="historique" string="Historique">
    					</page>
 		        </page>
+            </field>
+        </record>
+       
+       <!-- Ajouter type adresse (livraison, facture, ...) dans liste partenaires -->
+       <record id="of_res_partner_tree" model="ir.ui.view">
+        	<field name="name">of.res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="arch" type="xml">
+            	<field name="display_name" position="after">
+                    <field name="type"/>
+				</field>
             </field>
         </record>
 
