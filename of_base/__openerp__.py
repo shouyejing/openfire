@@ -26,6 +26,7 @@
     'complexity': "easy",
     "description" : """
 Personnalisations des fonctions de base Odoo :
+
 - Autorisation de générer les boutons d'action d'envoi d'emails depuis les modèles d'emails pour les administrateurs.
 - Ajout des colonnes destinataire et partenaire dans la vue liste des emails
 - Ajout onglet historique dans formulaire partenaire
@@ -38,7 +39,8 @@ Personnalisations des fonctions de base Odoo :
     ],
     "data" : [
         'of_base_view.xml',
-        'wizard/wizard_change_active_product.xml'
+        'wizard/wizard_change_active_product.xml',
+        'nom_base.xml'
     ],
     'installable': True,
     'application': False,
