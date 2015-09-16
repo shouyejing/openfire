@@ -30,6 +30,8 @@ Personnalisations des fonctions de base Odoo :
 - Autorisation de générer les boutons d'action d'envoi d'emails depuis les modèles d'emails pour les administrateurs.
 - Ajout des colonnes destinataire et partenaire dans la vue liste des emails
 - Ajout onglet historique dans formulaire partenaire
+- Ajoute la référence du produit dans la vue liste
+- Affiche en permanence le nom de la base dans la barre de menu
 """,
     "website" : "www.openfire.fr",
     "depends" : ["base", "email_template", "product"],
