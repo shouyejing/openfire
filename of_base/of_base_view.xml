@@ -53,6 +53,19 @@
             </field>
         </record>
         
+       <!-- Ajouter référence produit dans liste articles -->
+       <record id="of_product_template_tree" model="ir.ui.view">
+        	<field name="name">of.product.template.tree</field>
+            <field name="model">product.template</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product.product_template_tree_view" />
+            <field name="arch" type="xml">
+            	<field name="name" position="before">
+                    <field name="default_code"/>
+				</field>
+            </field>
+        </record>
+        
         <!-- Ajouter type adresse (livraison, facture, ...) dans vue Kanban quand est un contact-->
         <record id="of_res_partner_kanban" model="ir.ui.view" >
 		    <field name="name">of.res.partner.kanban</field>

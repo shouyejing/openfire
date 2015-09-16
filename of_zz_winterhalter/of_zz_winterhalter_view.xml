@@ -2,26 +2,26 @@
 <openerp>
     <data>
 
-        <!-- Parc installé filtre -->    
-        <record id="of_parc_installe_search_view" model="ir.ui.view">
-            <field name="name">of.parc.installe.search</field>
-            <field name="model">of.parc.installe</field>
-            <field name="arch" type="xml">
-                <search string="Parc installé">
-                    <field name="name"/>
-                    <field name="product_id"/>
-                    <field name="client_id"/>
-                    <field name="tel_site_id"/>
-                    <field name="date_service"/>
-                    <field name="revendeur_id"/>
-                    <group expand="0" string="Regrouper par">
-                       <filter string="Client" icon="terp-personal" context="{'group_by' : 'client_id'}"/>
-                       <filter string="Produit" icon="terp-personal" context="{'group_by' : 'product_id'}"/>
-                       <filter string="Revendeur" icon="terp-personal" context="{'group_by' : 'revendeur_id'}"/>                  
-                    </group>
-                </search>
-            </field>
-        </record>
+		<!-- Parc installé filtre -->    
+		<record id="of_parc_installe_search_view" model="ir.ui.view">
+		    <field name="name">of.parc.installe.search</field>
+		    <field name="model">of.parc.installe</field>
+		    <field name="arch" type="xml">
+		        <search string="Parc installé">
+		            <field name="name"/>
+		            <field name="product_id"/>
+		            <field name="client_id"/>
+		            <field name="tel_site_id"/>
+		            <field name="date_service"/>
+		            <field name="revendeur_id"/>
+		            <group expand="0" string="Regrouper par">
+		               <filter string="Client" icon="terp-personal" context="{'group_by' : 'client_id'}"/>
+		               <filter string="Produit" icon="terp-personal" context="{'group_by' : 'product_id'}"/>
+		               <filter string="Revendeur" icon="terp-personal" context="{'group_by' : 'revendeur_id'}"/>                  
+		            </group>
+		        </search>
+		    </field>
+		</record>
 
         <!-- Parc installé tree -->
         <record id="of_parc_installe_tree_view" model="ir.ui.view">
@@ -82,36 +82,62 @@
             </field>
         </record>
 
-       <!-- Action vue parc installé -->
-       <record id="action_view_of_parc_installe" model="ir.actions.act_window">
-            <field name="name">Parc installé</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">of.parc.installe</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="of_parc_installe_search_view"/>
-            <field name="help">Parc des produits installés</field>
-       </record>
+		<!-- Action vue parc installé -->
+		<record id="action_view_of_parc_installe" model="ir.actions.act_window">
+		     <field name="name">Parc installé</field>
+		     <field name="type">ir.actions.act_window</field>
+		     <field name="res_model">of.parc.installe</field>
+		     <field name="view_type">form</field>
+		     <field name="view_mode">tree,form</field>
+		     <field name="search_view_id" ref="of_parc_installe_search_view"/>
+		     <field name="help">Parc des produits installés</field>
+		</record>
        
-       <!-- Menu parc installé (Ventes/SAV/Parc installé) -->
-       <menuitem id="menu_of_parc_installe" action="action_view_of_parc_installe" name="Parc installé" 
-            parent="base.menu_aftersale" sequence="20"/>
-            <!--  groups="base.group_extended,base.group_sale_salesman" -->
-
-
-       <!-- insertion Produit installé lié dans SAV -->
-       <record id="of_produit_installe_sav_lie" model="ir.ui.view" >
-            <field name="name">of.produit_installe.sav.lie</field>
-            <field name="model">crm.helpdesk</field>
-            <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk"/>
-            <field name="arch" type="xml" >
-                <group  string="Communication" position="before">
-                	<group string="Produit" colspan="4">
-                    	<field name="produit_installe_id"/>
-                    </group>
-                </group>
-            </field>
-        </record>
+		<!-- Menu parc installé (Ventes/SAV/Parc installé) -->
+		<menuitem id="menu_of_parc_installe" action="action_view_of_parc_installe" name="Parc installé" 
+		     parent="base.menu_aftersale" sequence="20"/>
+		     <!--  groups="base.group_extended,base.group_sale_salesman" -->
+		
+		
+		<!-- insertion Produit installé lié dans SAV -->
+		<record id="of_produit_installe_sav_lie" model="ir.ui.view" >
+		    <field name="name">of.produit_installe.sav.lie</field>
+		    <field name="model">crm.helpdesk</field>
+		    <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk"/>
+		    <field name="arch" type="xml" >
+		        <group  string="Communication" position="before">
+		         	<group string="Produit" colspan="4">
+		            	<field name="produit_installe_id"/>
+		            </group>
+		        </group>
+		    </field>
+		</record>
+        
+		<!-- Ajouter référence client dans liste partenaires -->
+		<record id="of_res_partner_winterhalter_tree" model="ir.ui.view">
+		   	<field name="name">of.res.partner.winterhalter.tree</field>
+		    <field name="model">res.partner</field>
+		    <field name="type">tree</field>
+		    <field name="inherit_id" ref="base.view_partner_tree" />
+		    <field name="arch" type="xml">
+		      	<field name="display_name" position="before">
+		            <field name="ref" string="Compte client"/>
+				</field>
+		    </field>
+		</record>
+	       
+		<!-- Mettre référence client en haut dans formulaire partenaires -->
+		<record id="of_res_partner_winterhalter_form" model="ir.ui.view">
+		    <field name="name">of.res.partner.winterhalter.form</field>
+		    <field name="model">res.partner</field>
+		    <field name="inherit_id" ref="base.view_partner_form"/>
+		    <field name="arch" type="xml">
+		        <field name="ref" position="replace"/>
+		        <label for="type" attrs="{'invisible': [('parent_id','=', False)]}" position="before">
+		            <field name="ref" string="Compte client"/>
+		        </label>
+		    </field>
+		</record>
 
     </data>
 </openerp>

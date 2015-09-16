@@ -12,7 +12,10 @@
         "website" : "www.openfire.fr",
         "category" : "OpenFire",
         "description": """
-SAV pour Winterhalter
+Module spécifique pour Winterhalter
+
+- Application parc installé
+- Affichage personnalisée pour Winterhalter
 """,
         "depends" : [
             # MG 'of_crm_helpdesk'
