@@ -6,7 +6,7 @@
 ##############################################################################
 
 {
-        "name" : "OpenFire / SAV pour Winterhalter",
+        "name" : "OpenFire / Module spécifique pour Winterhalter",
         "version" : "1.1",
         "author" : "OpenFire",
         "website" : "www.openfire.fr",
@@ -15,7 +15,7 @@
 Module spécifique pour Winterhalter
 
 - Application parc installé
-- Affichage personnalisée pour Winterhalter
+- Affichages personnalisés pour Winterhalter
 """,
         "depends" : [
             # MG 'of_crm_helpdesk'

@@ -36,7 +36,7 @@ class of_parc_installe(osv.Model):
         'name': fields.char("No de série", size=64, required=True),
         'date_service': fields.date('Date de mise en service', required=False),
         'product_id': fields.many2one('product.product', 'Produit', required=True, ondelete='restrict'),
-        'client_id': fields.many2one('res.partner', 'Client', required=True,  domain="[('parent_id','=',False)]", ondelete='restrict'),
+        'client_id': fields.many2one('res.partner', 'Client', required=True, domain="[('parent_id','=',False)]", ondelete='restrict'),
         'site_adresse_id': fields.many2one('res.partner', 'Site installation', required=False, domain="['|',('parent_id','=',client_id),('id','=',client_id)]", ondelete='restrict'),
         'revendeur_id': fields.many2one('res.partner', 'Revendeur', required=False,  domain="[('of_revendeur','=',True)]", ondelete='restrict'),
         'installateur_id': fields.many2one('res.partner', 'Installateur', required=False, domain="[('of_installateur','=',True)]", ondelete='restrict'),
@@ -54,7 +54,7 @@ class crm_helpdesk(osv.Model):
     _inherit = "crm.helpdesk"
 
     _columns = {
-        'produit_installe_id': fields.many2one('of.parc.installe', 'Produit installé', readonly=False),
+        'of_produit_installe_id': fields.many2one('of.parc.installe', 'Produit installé', readonly=False),
     }
 
 
@@ -65,4 +65,17 @@ class res_partner(osv.Model):
     _columns = {
         'of_revendeur': fields.boolean('Revendeur', help="Cocher cette case si ce partenaire est un revendeur."),
         'of_installateur': fields.boolean('Installateur', help="Cocher cette case si ce partenaire est un installateur."),
+        'of_payeur_id': fields.many2one('res.partner', 'Client payeur', required=False,  domain="[('parent_id','=',False)]", ondelete='restrict'),
     }
+    
+    _sql_constraints = [('ref_uniq', 'unique(ref)', 'Le n° de compte client est déjà utilisé et doit être unique.')]
+
+
+class product_template(osv.Model):
+    _name = "product.template"
+    _inherit = "product.template"
+    
+    _columns = {
+        'of_est_dangereux': fields.boolean('Produit dangereux', help="Cocher cette case si ce produit est dangereux."),
+    }
+ 

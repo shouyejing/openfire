@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- Afficher de façon permanente le nom de la base dans la barre de menu -->
+
 <openerp>
 	<data>
 		<template id="assets_backend" name="mydisplaydb" inherit_id="web.assets_backend">
