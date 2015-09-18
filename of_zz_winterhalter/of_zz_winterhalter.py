@@ -77,5 +77,7 @@ class product_template(osv.Model):
     
     _columns = {
         'of_est_dangereux': fields.boolean('Produit dangereux', help="Cocher cette case si ce produit est dangereux."),
+        'of_poids_adr': fields.float('Poids ADR', help="Poids ADR"),
     }
+    
  

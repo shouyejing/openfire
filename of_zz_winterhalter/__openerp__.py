@@ -20,6 +20,7 @@ Module spécifique pour Winterhalter
         "depends" : [
             # MG 'of_crm_helpdesk'
             'crm_helpdesk',
+            'product',
         ],
         "demo_xml" : [ ],
         "data" : [

@@ -155,7 +155,7 @@
 		    </field>
 		</record>
 		
-		<!-- Mettre référence client en haut dans formulaire partenaires -->
+		<!-- Produits : ajout produit dangereux et poids ADR (poids produit dangereux) -->
 		<record id="of_product_template_winterhalter_form" model="ir.ui.view">
 		    <field name="name">of.product.template.winterhalter.form</field>
 		    <field name="model">product.template</field>
@@ -163,6 +163,9 @@
 		    <field name="arch" type="xml">
 		        <field name="default_code" position="after">
 		        	<field name="of_est_dangereux"/>
+		        </field>
+		        <field name="weight_net" position="after">
+		        	<field name="of_poids_adr"/>
 		        </field>
 		    </field>
 		</record>
