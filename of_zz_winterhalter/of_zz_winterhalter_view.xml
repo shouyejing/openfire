@@ -102,12 +102,15 @@
 		     <!--  groups="base.group_extended,base.group_sale_salesman" -->
 		
 		
-		<!-- insertion Produit installé lié dans SAV -->
+		<!-- insertion Produit installé lié et champs supplémentaires Winterhalter dans SAV -->
 		<record id="of_produit_installe_sav_lie" model="ir.ui.view" >
 		    <field name="name">of.produit_installe.sav.lie</field>
 		    <field name="model">crm.helpdesk</field>
 		    <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk"/>
 		    <field name="arch" type="xml" >
+		    	<field name="date" position="after">
+		    		<field name="of_type"/>
+		    	</field>
 		        <group  string="Communication" position="before">
 		         	<group string="Produit" colspan="4">
 		            	<field name="of_produit_installe_id"/>
@@ -115,7 +118,25 @@
 		        </group>
 		    </field>
 		</record>
-        
+		
+		
+		<!-- Lien pour action créer SAV demande d'intervention-->
+		
+        <record id="action_open_demande_intervention" model="ir.actions.server">
+            <field name="name">Effectuer une demande d'intervention</field>
+            <field name="model_id" ref="crm_helpdesk.model_crm_helpdesk"/>
+            <field name="state">code</field>
+            <field name="code">action = self.pool['crm.helpdesk'].ouvrir_demande_intervention(cr, uid, context)</field>
+        </record>
+
+        <record id="action_create_demande_intervention" model="ir.values">
+            <field name="name">Effectuer une demande d'intervention</field>
+            <field name="key2">client_action_multi</field>
+            <field name="model">crm.helpdesk</field>
+            <field name="value" eval="'ir.actions.server,%d'%action_open_demande_intervention"/>
+            <field name="object" eval="True"/>
+        </record>
+     
         <!-- Vue partenaire filtre recherche ajout recherche par réf client -->
         <record id="of_res_partner_filter" model="ir.ui.view">
             <field name="name">of.res.partner.filter</field>

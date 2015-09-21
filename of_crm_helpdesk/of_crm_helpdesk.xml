@@ -246,7 +246,7 @@
 
         <record id="action_open_sale_order" model="ir.actions.server">
             <field name="name">Générer devis client</field>
-            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="model_id" ref="sale.model_sale_order"/>
             <field name="state">code</field>
             <field name="code">action = self.pool['crm.helpdesk'].open_sale_order(cr, uid, context)</field>
         </record>
@@ -255,11 +255,11 @@
             <field name="name">Générer devis client</field>
             <field name="key2">client_action_multi</field>
             <field name="model">crm.helpdesk</field>
-            <field name="value" eval="'ir.actions.server,%d'%action_open_sale_order" />
-            <field name="object" eval="True" />
+            <field name="value" eval="'ir.actions.server,%d'%action_open_sale_order"/>
+            <field name="object" eval="True"/>
         </record>
  
- <!-- Lien pour creer demande de prix -->
+ <!-- Lien pour créer demande de prix -->
 
         <record id="action_open_purchase_order" model="ir.actions.server">
             <field name="name">Générer commande fournisseur</field>
@@ -273,7 +273,7 @@
             <field name="key2">client_action_multi</field>
             <field name="model">crm.helpdesk</field>
             <field name="value" eval="'ir.actions.server,%d'%action_open_purchase_order" />
-            <field name="object" eval="True" />
+            <field name="object" eval="True"/>
         </record>
 
        <!-- insertion SAV lié dans planning pose form -->

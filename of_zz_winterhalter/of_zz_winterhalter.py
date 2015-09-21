@@ -55,7 +55,49 @@ class crm_helpdesk(osv.Model):
 
     _columns = {
         'of_produit_installe_id': fields.many2one('of.parc.installe', 'Produit installé', readonly=False),
+        'of_type': fields.selection([('contacttel',u'Contact téléphonique'), ('di',u'Demande d\'intervention')], 'Type', required=False, help=u"Type de SAV"),
     }
+    
+    _defaults = {
+        'of_type': 'contacttel',
+    }
+    
+    def ouvrir_demande_intervention(self, cr, uid, context={}):
+        # Ouvre une demande d'intervenion depuis un SAV (normalement contact téléphonique) en reprenant les renseignements du SAV en cours.
+        # Objectif : permettre de déclencher rapidement une demande d'intervention après un contact téléphonique sans à avoir à resaisir les champs
+        
+        if not context:
+            context = {}
+        res = {
+            'name': 'Demande intervention',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'crm.helpdesk',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+        }
+        
+        # On récupère les données du SAV courant
+        if 'active_ids' in context.keys():
+            active_ids = isinstance(context['active_ids'], (int,long)) and [context['active_ids']] or context['active_ids']
+            if active_ids:
+                crm_helpdesk = self.browse(cr, uid, active_ids[0])
+                if crm_helpdesk.partner_id:
+                    res['context'] = {'default_partner_id': crm_helpdesk.partner_id.id,
+                        'default_name': crm_helpdesk.name,
+                        'default_of_type': 'di',
+                        'default_of_produit_installe_id': crm_helpdesk.of_produit_installe_id.id,
+                        'default_email_from': crm_helpdesk.email_from,
+                        'default_priority': crm_helpdesk.priority,
+                        'default_categ_id': crm_helpdesk.categ_id.id,
+                        'default_date_deadline': crm_helpdesk.date_deadline,
+                        'default_garantie': crm_helpdesk.garantie,
+                        'default_payant_client': crm_helpdesk.payant_client,
+                        'default_payant_fournisseur': crm_helpdesk.payant_fournisseur,
+                        }
+                else:
+                    return False
+        return res
 
 
 class res_partner(osv.Model):
