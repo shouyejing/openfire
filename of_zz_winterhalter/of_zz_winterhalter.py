@@ -108,6 +108,7 @@ class res_partner(osv.Model):
         'of_revendeur': fields.boolean('Revendeur', help="Cocher cette case si ce partenaire est un revendeur."),
         'of_installateur': fields.boolean('Installateur', help="Cocher cette case si ce partenaire est un installateur."),
         'of_payeur_id': fields.many2one('res.partner', 'Client payeur', required=False,  domain="[('parent_id','=',False)]", ondelete='restrict'),
+        'of_ape': fields.char("Code APE", size=16, required=False),
     }
     
     _sql_constraints = [('ref_uniq', 'unique(ref)', 'Le n° de compte client est déjà utilisé et doit être unique.')]

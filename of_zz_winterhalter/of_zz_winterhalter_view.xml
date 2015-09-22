@@ -69,22 +69,6 @@
             </field>
         </record>
         
-        <!-- Ajouter champs revendeur, installateur et payeur dans formulaire partenaire -->
-        <record id="of_parc_installe_partner" model="ir.ui.view">
-            <field name="name">of.parc.installe.partner</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="arch" type="xml">
-                <field name="user_id" position="after">
-                    <field name="of_revendeur"/>
-                    <field name="of_installateur"/>
-                </field>
-                <field name="website" position="after">
-                    <field name="of_payeur_id" attrs="{'invisible': [('parent_id','!=', False)]}"/>
-                </field>
-            </field>
-        </record>
-
 		<!-- Action vue parc installé -->
 		<record id="action_view_of_parc_installe" model="ir.actions.act_window">
 		     <field name="name">Parc installé</field>
@@ -162,17 +146,27 @@
 				</field>
 		    </field>
 		</record>
-	       
-		<!-- Mettre référence client en haut dans formulaire partenaires -->
+		
+		<!-- Mettre revendeur, installateur, payeur, référence client en haut dans formulaire partenaires -->
 		<record id="of_res_partner_winterhalter_form" model="ir.ui.view">
 		    <field name="name">of.res.partner.winterhalter.form</field>
 		    <field name="model">res.partner</field>
 		    <field name="inherit_id" ref="base.view_partner_form"/>
 		    <field name="arch" type="xml">
-		        <field name="ref" position="replace"/>
+		        <field name="user_id" position="after">
+                    <field name="of_revendeur"/>
+                    <field name="of_installateur"/>
+                </field>
+                <field name="website" position="after">
+                    <field name="of_payeur_id" attrs="{'invisible': [('parent_id','!=', False)]}"/>
+                </field>
+                <field name="ref" position="replace"/>
 		        <label for="type" attrs="{'invisible': [('parent_id','=', False)]}" position="before">
 		            <field name="ref" string="Compte client" attrs="{'invisible': [('parent_id','!=', False)]}"/>
 		        </label>
+		        <field name="lang" position="after">
+		            <field name="of_ape"/>
+		        </field>
 		    </field>
 		</record>
 		
