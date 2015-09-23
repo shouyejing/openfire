@@ -33,8 +33,8 @@ class of_parc_installe(osv.Model):
     _description = "Parc installé"
     
     _columns={
-        'name': fields.char("No de série", size=64, required=True),
-        'date_service': fields.date('Date de mise en service', required=False),
+        'name': fields.char("No de série", size=64, required=False),
+        'date_service': fields.date('Date vente', required=False),
         'product_id': fields.many2one('product.product', 'Produit', required=True, ondelete='restrict'),
         'client_id': fields.many2one('res.partner', 'Client', required=True, domain="[('parent_id','=',False)]", ondelete='restrict'),
         'site_adresse_id': fields.many2one('res.partner', 'Site installation', required=False, domain="['|',('parent_id','=',client_id),('id','=',client_id)]", ondelete='restrict'),
@@ -43,6 +43,10 @@ class of_parc_installe(osv.Model):
         'installateur_adresse_id': fields.many2one('res.partner', 'Adresse installateur', required=False, domain="['|',('parent_id','=',installateur_id),('id','=',installateur_id)]", ondelete='restrict'),
         'note': fields.text('Note'),
         'tel_site_id': fields.related('site_adresse_id', 'phone', readonly=True, type='char', string=u'Téléphone site installation'),
+        'no_piece': fields.char(u'N° pièce', size=64, required=False),
+        'chiffre_aff_ht': fields.float('Chiffre d\'affaire HT', help=u"Chiffre d\'affaire HT"),
+        'quantite_vendue': fields.float(u'Quantité vendue', help=u"Quantité vendue"),
+        'marge': fields.float(u'Marge', help=u"Marge"),
     }
     
     _sql_constraints = [('no_serie_uniq', 'unique(name)', 'Ce numéro de série est déjà utilisé et doit être unique.')]
