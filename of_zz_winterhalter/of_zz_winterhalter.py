@@ -49,7 +49,7 @@ class of_parc_installe(osv.Model):
         'marge': fields.float(u'Marge', help=u"Marge"),
     }
     
-    _sql_constraints = [('no_serie_uniq', 'unique(name)', 'Ce numéro de série est déjà utilisé et doit être unique.')]
+    # Désactiver contrainte car plusieurs no série identique possible _sql_constraints = [('no_serie_uniq', 'unique(name)', 'Ce numéro de série est déjà utilisé et doit être unique.')]
 
 
 

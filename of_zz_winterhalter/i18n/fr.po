@@ -59,8 +59,8 @@ msgstr "Créé le"
 
 #. module: of_zz_winterhalter
 #: field:of.parc.installe,date_service:0
-msgid "Date de mise en service"
-msgstr "Date de mise en service"
+msgid "Date vente"
+msgstr "Date vente"
 
 #. module: of_zz_winterhalter
 #: view:of.parc.installe:of_zz_winterhalter.of_parc_installe_search_view
