@@ -46,11 +46,19 @@
             <field name="arch" type="xml">
 	            <form>
 	            	<group string="Client">
-		                <field name="client_id"/>
-		                <field name="site_adresse_id" context="{'show_address_only': True}"/>
-		                <field name="tel_site_id"/>
+	            		<field name="client_id"/>
+	            		<label for="site_adresse_id" string="Site installation"/>
+		                <div>
+		                    <field name="site_adresse_id" nolabel="1" context="{'show_address': True}"/>
+			                <field name="street_site_id" nolabel="1"/>
+			                <field name="street2_site_id" nolabel="1"/>
+			                <field name="zip_site_id" style="width: 20%" nolabel="1"/>
+			                <field name="city_site_id" style="width: 40%" nolabel="1"/>
+			                <field name="country_site_id" nolabel="1"/>
+			                <field name="tel_site_id" nolabel="1"/>
+			            </div>
 		            </group>
-			            <group>
+			        <group>
 			            <group string="Produit installé">
 			                <field name="product_id"/>
 			                <field name="name"/>
@@ -63,7 +71,7 @@
 			            <group string="Pose">
 			           		<field name="revendeur_id"/>
 			                <field name="installateur_id"/>
-			                <field name="installateur_adresse_id" context="{'show_address_only': True}"/>             
+			                <!-- <field name="installateur_adresse_id" context="{'show_address': True}"/> -->             
 			            </group>
 		            </group>
 		            <group>
