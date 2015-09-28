@@ -170,6 +170,19 @@ class crm_helpdesk(osv.Model):
         # MG 'show_partner_shop' : False,
     }
 
+    # Quand on clique sur le bouton "Ouvrir" dans la liste des SAV pour aller sur le SAV
+    def button_open_of_sav(self, cr, uid, ids, *args):
+        sav_id = isinstance(ids, (int, long)) and ids or ids[0]
+        if sav_id:           
+            return {
+                'name': 'SAV',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'crm.helpdesk',
+                'res_id': sav_id,
+                'type': 'ir.actions.act_window',
+            }
+
     # Migration ok
     def onchange_shop_id(self, cr, uid, ids, shop_id, partner_shop_id):
         return {'value': {'show_partner_shop': shop_id != partner_shop_id}}
@@ -602,36 +615,41 @@ class of_sav_docs(osv.TransientModel):
         return res
 
     # Migration ok
+    # Quand on clique sur le bouton "Ouvrir" de la liste des documents dans la vue SAV
     def button_open_of_sav(self, cr, uid, ids, *args):
-        ids = isinstance(ids, int or long) and [ids] or ids
         if ids:
-            for doc in self.browse(cr, uid, ids):
-                res_model = doc.doc_objet
-                if res_model == 'account.invoice':
-                    name = 'Factures Clients'
-                    res_id = doc.invoice_id.id
-                elif res_model == 'sale.order':
-                    name = 'Devis / Commandes Clients'
-                    res_id = doc.sale_order_id.id
-                elif res_model == 'purchase.order':
-                    name = 'Demande de prix / Commandes Fournisseurs'
-                    res_id = doc.purchase_order_id.id
+            doc = self.browse(cr, uid, isinstance(ids, (int,long)) and ids or ids[0])
+            res_model = doc.doc_objet
+            if res_model == 'account.invoice':
+                name = 'Factures Clients'
+                res_id = doc.invoice_id.id
+            elif res_model == 'sale.order':
+                name = 'Devis / Commandes Clients'
+                res_id = doc.sale_order_id.id
+            elif res_model == 'purchase.order':
+                name = 'Demande de prix / Commandes Fournisseurs'
+                res_id = doc.purchase_order_id.id
 
-                return {
-                    'name': name,
-                    'view_type': 'form',
-                    'view_mode': 'form',
-                    'res_model': res_model,
-                    'res_id': res_id,
-                    'type': 'ir.actions.act_window',
-                    'target': 'new',
-                }
+            return {
+                'name': name,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': res_model,
+                'res_id': res_id,
+                'type': 'ir.actions.act_window',
+                'target': 'new',
+            }
 
-# MG 
-# class res_partner(osv.Model):
-#     _name = 'res.partner'
-#     _inherit = 'res.partner'
-#     
+# Ajout historique SAV dans vue partenaires
+class res_partner(osv.Model):
+    _name = 'res.partner'
+    _inherit = 'res.partner'
+     
+    _columns = {
+           'crm_helpdesk_ids': fields.one2many('crm.helpdesk', 'partner_id', 'SAV'),
+       }
+    
+# MG
 #     def _get_courriels(self, cr, uid, ids, *args):
 #         result = {}
 #         for part in self.browse(cr, uid, ids):

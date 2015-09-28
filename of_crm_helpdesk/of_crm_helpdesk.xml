@@ -115,7 +115,7 @@
 	                            <field name="amount_total"/>
 	                            <field name="state"/>
 	                            <field name="doc_objet" invisible="1"/>
-	                            <button name="button_open_of_sav" string="Ouvrir" type="object" icon="ouvrir"/>
+	                            <button name="button_open_of_sav" class="oe_link" type="object" string="Ouvrir"/>
 	                        </tree>
 	                        <form string="Documents">
                                 <field name="number"/>
@@ -316,12 +316,35 @@
         </record>  -->       
         
 
-       <!-- SAV suppression du filtre par défaut (par responsable)
-       NE FONCTIONNE PAS car action en noupdate="1" dans crm_helpdesk
-       A REECRIRE -->
+        <!-- SAV suppression du filtre par défaut (par responsable)
+        NE FONCTIONNE PAS car action en noupdate="1" dans crm_helpdesk
+        A REECRIRE -->
         <!--record model="ir.actions.act_window" id="crm_helpdesk.crm_case_helpdesk_act111">
               <field name="context">{}</field>
         </record-->
         
+        <!-- Ajout historique SAV dans vue partenaires -->
+        <record id="of_crm_helpdesk_partner_form_view" model="ir.ui.view">
+            <field name="name">of.crm.helpdesk.partner.form.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+	            <page name="historique" position="inside">
+                    <field name="crm_helpdesk_ids" nolabel="1" context="{'default_partner_id':id}">
+                        <tree string="SAV">
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="date_deadline"/>
+                            <field name="user_id"/>
+                            <field name="priority"/>
+                            <field name="state"/>
+                            <button name="button_open_of_sav" class="oe_link" type="object" string="Ouvrir"/>
+                        </tree>
+                    </field>
+                </page>
+            </field>
+        </record>
+              
     </data>
 </openerp>
