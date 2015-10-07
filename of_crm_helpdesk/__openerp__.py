@@ -37,7 +37,9 @@
      - Possibilité de générer un devis ou une demande de prix depuis le SAV (menu droit).
      - Affichage des emails envoyés aux fournisseurs depuis le SAV
     """,
-    "depends" : ['crm_helpdesk'], # Migration , 'of_appro', 'of_planning'],
+    "depends" : ['crm_helpdesk', 'sale', 'purchase', 'of_base'], # Migration , 'of_appro', 'of_planning'],
+    # Modules sale, purchase nécessaires pour historique documents
+    # of_base nécessaire pour onglet historique dans vue partenaire
 
     "init_xml" : [ 
         'of_crm_helpdesk_sequence.xml',
