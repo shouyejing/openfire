@@ -13,12 +13,24 @@ class Lead(models.Model):
     of_ref = fields.Char(string="Référence",copy=False)
     of_prospecteur = fields.Many2one("res.users",string="Prospecteur")
     of_date_prospection = fields.Date(string="Date de prospection")
-    of_date_cloture = fields.Date(string="Date de clôture")
+    #@TODO: implémenter la maj automatique de la date de cloture en fonction du passage de probabilité à 0 ou 100
+    of_date_cloture = fields.Date(string="Date de clôture") 
     of_infos_compl = fields.Text(string="Autres infos")
     geo_lat = fields.Float(string='Geo Lat', digits=(8, 8))
     geo_lng = fields.Float(string='Geo Lng', digits=(8, 8))
+    stage_probability = fields.Float(related="stage_id.probability",readonly=True)
+
+    source_id = fields.Many2one(domain="[('medium_id', '=', medium_id)]")
+
+    @api.onchange('medium_id')
+    def _onchange_medium_id(self):
+        if self.medium_id:
+            self.source_id = self.medium_id.source_ids and self.medium_id.source_ids[0] or False
+        else:
+            self.source_id = False
 
     # Récupération du site web à la sélection du partenaire
+    # Pas de api.onchange parceque crm.lead._onchange_partner_id_values
     def _onchange_partner_id_values(self, partner_id):
         res = super(Lead, self)._onchange_partner_id_values(partner_id)
 
@@ -118,8 +130,16 @@ class Team(models.Model):
 class OFUtmMedium(models.Model):
     _inherit = 'utm.medium'
 
-    source_id = fields.Many2one('utm.source',string='Origine par défaut')
+    source_ids = fields.One2many('utm.source', 'medium_id', string="Origines disponibles")
 
+class OFUtmSource(models.Model):
+    _inherit = 'utm.source'
+    _order = 'sequence'
+
+    sequence = fields.Integer(string='Sequence', default=10)
+    medium_id = fields.Many2one('utm.medium', string='Canal associé')
+
+"""
 class OFUtmMixin(models.AbstractModel):
     _inherit = 'utm.mixin'
 
@@ -129,3 +149,4 @@ class OFUtmMixin(models.AbstractModel):
         self.ensure_one()
         if self.medium_id and self.medium_id.source_id:
             self.source_id = self.medium_id.source_id
+"""
