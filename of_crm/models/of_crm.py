@@ -10,7 +10,7 @@ class Lead(models.Model):
     of_website = fields.Char('Site web', help="Website of Lead")
     tag_ids = fields.Many2many('res.partner.category', 'crm_lead_res_partner_category_rel', 'lead_id', 'category_id', string='Tags', help="Classify and analyze your lead/opportunity categories like: Training, Service", oldname="of_tag_ids")
     of_description_projet = fields.Html('Notes de projet')
-    of_ref = fields.Char(string="Référence",copy=False)
+    of_ref = fields.Char(string=u"Référence",copy=False)
     of_prospecteur = fields.Many2one("res.users",string="Prospecteur")
     of_date_prospection = fields.Date(string="Date de prospection")
     #@TODO: implémenter la maj automatique de la date de cloture en fonction du passage de probabilité à 0 ou 100
@@ -21,6 +21,7 @@ class Lead(models.Model):
     stage_probability = fields.Float(related="stage_id.probability",readonly=True)
 
     source_id = fields.Many2one(domain="[('medium_id', '=', medium_id)]")
+    activity_ids = fields.One2many('of.crm.opportunity.activity', 'lead_id', string=u"Activités de cette opportunité")
 
     @api.onchange('medium_id')
     def _onchange_medium_id(self):
@@ -41,20 +42,6 @@ class Lead(models.Model):
             res['geo_lat'] = partner.geo_lat
             res['geo_lng'] = partner.geo_lng
         return res
-
-    """@api.model
-    def _onchange_stage_id_values(self, stage_id):
-        values = super(Lead,self)._onchange_stage_id_values(stage_id)
-        proba = getattr(values,'probability',1)
-        if proba == 0.0:
-            pass
-
-    @api.onchange('stage_id')
-    def _onchange_stage_id(self):
-        super(Lead,self)._onchange_stage_id()
-        proba = getattr(self,'probability',1)
-        if proba in (0.0,100.0):
-            self.of_date_cloture = time.strftime(DEFAULT_SERVER_DATE_FORMAT)"""
 
     # Transfert du site web à la création du partenaire
     @api.multi
@@ -87,7 +74,7 @@ class Lead(models.Model):
     @api.multi
     def action_set_lost(self):
         """ surcharge sans appel à super(), une opportunité perdue n'est pas forcément archivée 
-            fonction appelée depuis le wizard de motif de perte
+            fonction appelée (au moins) depuis le wizard de motif de perte
         """
         for lead in self:
             stage_id = lead._stage_find(domain=[('probability', '=', 0.0), ('on_change', '=', True)])
@@ -117,6 +104,42 @@ class Lead(models.Model):
                 self.write({'of_date_cloture': time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
         return res"""
 
+class OFCrmActivity(models.Model):
+    _inherit = 'crm.activity'
+
+
+class OFCrmOpportunityActivity(models.Model):
+    _name = 'of.crm.opportunity.activity'
+
+    sequence = fields.Integer(string='Sequence', default=10)
+    name = fields.Char(string='Libellé', required=True, index=True)
+    lead_id = fields.Many2one('crm.lead', string=u"Opportunité", required=True)
+    activity_id = fields.Many2one('crm.activity', string=u"Activité", required=True)
+    is_late = fields.Boolean(string=u"En retard", compute="_compute_is_late")
+    date_action = fields.Date(string=u"Date prévue") # à remplir via un onchange quelque part?
+    date_done = fields.Date(string=u"Date faite") # à remplir via un onchange quelque part?
+    is_done = fields.Boolean(string=u"Effectuée") # vouée à être retranscrit en bouton qui ouvre un wizard de compte rendu / de prévision de prochaine activité?
+    activity_result = fields.Text(string="Compte rendu")
+
+# transformer is_done et is_late en state? (1: 'todo', 2: 'late', 3: 'done') pour un _order = 'state'
+
+    @api.multi
+    def _compute_is_late(self):
+        for action in self:
+            if action.date_action and not action.is_done:
+                action.is_late = action.date_action < time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            else: # c'est pas en retard si c'est fait ou que y a pas de date
+                action.is_late = False
+
+    def add_report_to_opportunity_description(self):
+        """
+        copie le contenu du rapport dans le champ 'description' de lead_id.
+        la personne fait son action co, tape son compte-rendu, valide, et ça s'ajoute automatiquement dans le champs note de l'opportunité quoi 
+        """
+        self.ensure_one()
+        self.lead_id.description = self.activity_id + " (" + self.name + u") fait(e) le " + time.strftime(DEFAULT_SERVER_DATE_FORMAT) \
+            + u": \n" + self.activity_result + "\n" + self.lead_id.description
+
 class Team(models.Model):
     _inherit = 'crm.team'
 
@@ -139,14 +162,4 @@ class OFUtmSource(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     medium_id = fields.Many2one('utm.medium', string='Canal associé')
 
-"""
-class OFUtmMixin(models.AbstractModel):
-    _inherit = 'utm.mixin'
 
-    @api.multi
-    @api.onchange('medium_id')
-    def _onchange_medium_id(self):
-        self.ensure_one()
-        if self.medium_id and self.medium_id.source_id:
-            self.source_id = self.medium_id.source_id
-"""
