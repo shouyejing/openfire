@@ -105,6 +105,7 @@
                     <field name="of_date_cloture"/>
                     <field name="stage_probability" invisible="1"/>
                 </xpath>
+                <!-- multi-activites
                 <xpath expr="//form//sheet//notebook" position="before">
                     <label for="activity_ids"/>
                     <field name="activity_ids" mode="tree">
@@ -116,12 +117,12 @@
                             <field name="date_done"/>
                             <button string="Rendre compte" 
                                 icon='fa fa-check'
-                                attrs="{'invisible': [('is_done','=',True)]}"/><!-- ouvrir un wizard de compte rendu -->
+                                attrs="{'invisible': [('is_done','=',True)]}"/><!- - ouvrir un wizard de compte rendu - ->
                             <field name="is_done" invisible="1"/>
                             <field name="is_late" invisible="1"/>
                         </tree>
                     </field>
-                </xpath>
+                </xpath>-->
                 <xpath expr="//form//sheet//notebook" position="inside">
                     <page name="project" string="Projet">
                         <field name="of_description_projet"/>
@@ -133,8 +134,8 @@
                     </page>
                 </xpath>
                 <xpath expr="//form//sheet//notebook//page[1]" position="attributes">
-                    <attribute name="string">Notes</attribute>
-                    <attribute name="name">notes</attribute>
+                    <attribute name="string">Suivi</attribute>
+                    <attribute name="name">suivi</attribute>
                 </xpath>
                 <xpath expr="//form//sheet//notebook//page[@name='lead']" position="attributes">
                     <attribute name="string">Contact</attribute>
@@ -143,11 +144,6 @@
                     <field name="geo_lat"/>
                     <field name="geo_lng"/>
                 </xpath>
-                <!-- @TODO: remplacer l'encart de prochaine activité
-                <xpath expr="//label[@for='next_activity_id']/.." position="replace">
-                
-                </xpath>
-                -->
             </field>
         </record>
 
@@ -178,6 +174,7 @@
             </field>
         </record>
 
+        <!-- multi-activites
         <record id="of_crm_view_action_com_form" model="ir.ui.view">
             <field name="name">of.crm.opportunity.activity.form</field>
             <field name="model">of.crm.opportunity.activity</field>
@@ -195,11 +192,11 @@
                     </group>
                 </form>
             </field>
-        </record>
+        </record>-->
 
 <!--###############################################################################################################
 ##############################       U T M (utm.medium, utm.source)
-#################################################################################################################-->
+#################################################################################################################- ->
         <record id="of_crm_utm_medium_view_form" model="ir.ui.view">
             <field name="name">of.utm.medium.form</field>
             <field name="model">utm.medium</field>
@@ -226,7 +223,7 @@
                     <field name="medium_id"/>
                 </xpath>
             </field>
-        </record>
+        </record>-->
 
 <!--###############################################################################################################
 ##############################       VENTES

@@ -14,14 +14,14 @@ class Lead(models.Model):
     of_prospecteur = fields.Many2one("res.users",string="Prospecteur")
     of_date_prospection = fields.Date(string="Date de prospection")
     #@TODO: implémenter la maj automatique de la date de cloture en fonction du passage de probabilité à 0 ou 100
-    of_date_cloture = fields.Date(string="Date de clôture") 
+    of_date_cloture = fields.Date(string="Date de clôture")
     of_infos_compl = fields.Text(string="Autres infos")
     geo_lat = fields.Float(string='Geo Lat', digits=(8, 8))
     geo_lng = fields.Float(string='Geo Lng', digits=(8, 8))
     stage_probability = fields.Float(related="stage_id.probability",readonly=True)
 
-    source_id = fields.Many2one(domain="[('medium_id', '=', medium_id)]")
-    activity_ids = fields.One2many('of.crm.opportunity.activity', 'lead_id', string=u"Activités de cette opportunité")
+    """source_id = fields.Many2one(domain="[('medium_id', '=', medium_id)]")
+    #activity_ids = fields.One2many('of.crm.opportunity.activity', 'lead_id', string=u"Activités de cette opportunité")
 
     @api.onchange('medium_id')
     def _onchange_medium_id(self):
@@ -29,7 +29,7 @@ class Lead(models.Model):
             self.source_id = self.medium_id.source_ids and self.medium_id.source_ids[0] or False
         else:
             self.source_id = False
-
+"""
     # Récupération du site web à la sélection du partenaire
     # Pas de api.onchange parceque crm.lead._onchange_partner_id_values
     def _onchange_partner_id_values(self, partner_id):
@@ -108,7 +108,7 @@ class OFCrmActivity(models.Model):
     _inherit = 'crm.activity'
 
 
-class OFCrmOpportunityActivity(models.Model):
+"""class OFCrmOpportunityActivity(models.Model):
     _name = 'of.crm.opportunity.activity'
 
     sequence = fields.Integer(string='Sequence', default=10)
@@ -132,14 +132,14 @@ class OFCrmOpportunityActivity(models.Model):
                 action.is_late = False
 
     def add_report_to_opportunity_description(self):
-        """
+        "" "
         copie le contenu du rapport dans le champ 'description' de lead_id.
         la personne fait son action co, tape son compte-rendu, valide, et ça s'ajoute automatiquement dans le champs note de l'opportunité quoi 
-        """
+        "" "
         self.ensure_one()
         self.lead_id.description = self.activity_id + " (" + self.name + u") fait(e) le " + time.strftime(DEFAULT_SERVER_DATE_FORMAT) \
             + u": \n" + self.activity_result + "\n" + self.lead_id.description
-
+"""
 class Team(models.Model):
     _inherit = 'crm.team'
 
@@ -149,7 +149,7 @@ class Team(models.Model):
         action = super(Team, self).action_your_pipeline()
         action['context'] = {key: val for key, val in action['context'].iteritems() if not key.startswith('search_default_')}
         return action
-
+"""
 class OFUtmMedium(models.Model):
     _inherit = 'utm.medium'
 
@@ -161,5 +161,5 @@ class OFUtmSource(models.Model):
 
     sequence = fields.Integer(string='Sequence', default=10)
     medium_id = fields.Many2one('utm.medium', string='Canal associé')
-
+"""
 
