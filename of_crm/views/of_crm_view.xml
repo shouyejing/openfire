@@ -195,37 +195,6 @@
         </record>-->
 
 <!--###############################################################################################################
-##############################       U T M (utm.medium, utm.source)
-#################################################################################################################- ->
-        <record id="of_crm_utm_medium_view_form" model="ir.ui.view">
-            <field name="name">of.utm.medium.form</field>
-            <field name="model">utm.medium</field>
-            <field name="inherit_id" ref="utm.utm_medium_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form//group" position="inside">
-                    <field name="source_ids" mode="tree">
-                        <tree>
-                            <field name="sequence" widget="handle"/>
-                            <field name="name"/>
-                        </tree>
-                    </field>
-                </xpath>
-            </field>
-        </record>
-
-        <record id="of_utm_source_view_form" model="ir.ui.view">
-            <field name="name">of.utm.source.form</field>
-            <field name="model">utm.source</field>
-            <field name="inherit_id" ref="utm.utm_source_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form//group" position="inside">
-                    <field name="sequence"/>
-                    <field name="medium_id"/>
-                </xpath>
-            </field>
-        </record>-->
-
-<!--###############################################################################################################
 ##############################       VENTES
 #################################################################################################################-->
         <record id="of_crm_view_order_form" model="ir.ui.view">
@@ -248,5 +217,34 @@
             </field>
         </record>
 
+<!--###############################################################################################################
+##############################       PARTENAIRES
+#################################################################################################################-->
+        <record id="of_crm_view_partner_form" model="ir.ui.view">
+            <field name="name">of.crm.res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <div class="o_row">
+                    <field name="is_prospect" invisible="1"/>
+                    <div class="label label-info" attrs="{'invisible': [('is_prospect', '=', False)]}">Prospect</div>
+                </div>
+            </field>
+        </record>
+
+        <!-- Partner Kanban View -->
+        <record model="ir.ui.view" id="of_crm_res_partner_kanban_view">
+            <field name="name">of.crm.res.partner.kanban</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban//field[@name='type']" position="after">
+                    <field name="is_prospect"/>
+                </xpath>
+                <xpath expr="//kanban//templates//strong[@class='oe_partner_heading']" position="after">
+                    <div t-if="record.is_prospect.raw_value == true" class="label label-info">prospect</div>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

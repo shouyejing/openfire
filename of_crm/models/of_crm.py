@@ -20,16 +20,8 @@ class Lead(models.Model):
     geo_lng = fields.Float(string='Geo Lng', digits=(8, 8))
     stage_probability = fields.Float(related="stage_id.probability",readonly=True)
 
-    """source_id = fields.Many2one(domain="[('medium_id', '=', medium_id)]")
     #activity_ids = fields.One2many('of.crm.opportunity.activity', 'lead_id', string=u"Activités de cette opportunité")
 
-    @api.onchange('medium_id')
-    def _onchange_medium_id(self):
-        if self.medium_id:
-            self.source_id = self.medium_id.source_ids and self.medium_id.source_ids[0] or False
-        else:
-            self.source_id = False
-"""
     # Récupération du site web à la sélection du partenaire
     # Pas de api.onchange parceque crm.lead._onchange_partner_id_values
     def _onchange_partner_id_values(self, partner_id):
@@ -149,17 +141,55 @@ class Team(models.Model):
         action = super(Team, self).action_your_pipeline()
         action['context'] = {key: val for key, val in action['context'].iteritems() if not key.startswith('search_default_')}
         return action
-"""
-class OFUtmMedium(models.Model):
-    _inherit = 'utm.medium'
 
-    source_ids = fields.One2many('utm.source', 'medium_id', string="Origines disponibles")
+class OFCRMResPartner(models.Model):
+    _inherit = 'res.partner'
 
-class OFUtmSource(models.Model):
-    _inherit = 'utm.source'
-    _order = 'sequence'
+    is_prospect = fields.Boolean(string="Est un prospect")
+    #prospects_inited = False
+    #sale_order_components = self.filtered(lambda move: move.product_id.expense_policy == 'no').mapped('procurement_id.sale_comp_id') # bug mal initialisé sale_comp_id?
 
-    sequence = fields.Integer(string='Sequence', default=10)
-    medium_id = fields.Many2one('utm.medium', string='Canal associé')
-"""
+    @api.model
+    def _init_prospects(self):
+        partners = self.search(['customer','=',True])
+        partners._compute_sale_order_count()
+        todo = self.env['res.partner']
+        done = self.env['res.partner']
+        partner = partners.pop()
+        while partner in partners:
+            if partner.parent_id and partner.parent_id in done: # parent deja traité
+                partner.is_prospect = partner.parent_id.is_prospect
+                done += partner
+            elif partner.parent_id: # parent non traité
+                todo += partner
+            else: # pas de parent
+                if partner.sale_order_count == 0 and not partner.is_prospect:
+                    partner.is_prospect = True
+                elif partner.sale_order_count != 0 and partner.is_prospect:
+                    partner.is_prospect = False
 
+    def _compute_sale_order_count(self):
+        """
+surcharge méthode du même nom pour ne pas compter les devis dans les ventes
+        """
+        #added domain value for states
+        sale_data = self.env['sale.order'].read_group(domain=[('partner_id', 'child_of', self.ids),('state','in',['sale','done'])],
+                                                      fields=['partner_id'], groupby=['partner_id'])
+        # read to keep the child/parent relation while aggregating the read_group result in the loop
+        partner_child_ids = self.read(['child_ids'])
+        mapped_data = dict([(m['partner_id'][0], m['partner_id_count']) for m in sale_data])
+        for partner in self:
+            # let's obtain the partner id and all its child ids from the read up there
+            partner_ids = filter(lambda r: r['id'] == partner.id, partner_child_ids)[0]
+            partner_ids = [partner_ids.get('id')] + partner_ids.get('child_ids')
+            # then we can sum for all the partner's child
+            #added is_prospect
+            sale_order_count = sum(mapped_data.get(child, 0) for child in partner_ids)
+            partner.sale_order_count = sale_order_count
+            """if sale_order_count == 0:
+                partner.is_prospect = True
+            else:
+                partner.is_prospect = False"""
+
+class OFCRMSaleOrder(models.Model):
+    _inherit = 'sale.order'
