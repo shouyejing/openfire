@@ -151,22 +151,58 @@ class OFCRMResPartner(models.Model):
 
     @api.model
     def _init_prospects(self):
-        partners = self.search(['customer','=',True])
-        partners._compute_sale_order_count()
-        todo = self.env['res.partner']
+        customers = self.search([('customer','=',True)])
+        customers._compute_sale_order_count()
+        todo = self.search([('customer','=',True),'|',('parent_id','=', False),('company_type','=','company')]) # all customers without parent
         done = self.env['res.partner']
-        partner = partners.pop()
-        while partner in partners:
-            if partner.parent_id and partner.parent_id in done: # parent deja traité
-                partner.is_prospect = partner.parent_id.is_prospect
-                done += partner
-            elif partner.parent_id: # parent non traité
-                todo += partner
-            else: # pas de parent
+        length = len(customers)
+        
+        while len(todo) > 0:
+            partner = todo[0]
+            todo -= todo[0]
+            if not partner.parent_id:
                 if partner.sale_order_count == 0 and not partner.is_prospect:
                     partner.is_prospect = True
                 elif partner.sale_order_count != 0 and partner.is_prospect:
                     partner.is_prospect = False
+                done += partner
+            else:
+                print 'parent name: ', partner.parent_id.name
+                partner.is_prospect = partner.parent_id.is_prospect
+                done += partner
+            if len(partner.child_ids) > 0:
+                print 'name: ',partner.name
+                print 'children ids: ',partner.child_ids._ids
+                todo += partner.child_ids # add children to todo list
+        if len(done) == length:
+            print 'done!'
+        else:
+            print 'error!'
+
+    @api.model
+    def _init_prospects_old(self):
+        partners = self.search([('customer','=',True)])
+        partners._compute_sale_order_count()
+        todo = self.env['res.partner']
+        done = self.env['res.partner']
+        length = len(partners)
+        while len(done) <= length:
+            while len(partners) > 0:
+                partner = partners[len(partners)-1]
+                partners -= partners[len(partners)-1]
+                if not partner.parent_id:
+                    if partner.sale_order_count == 0 and not partner.is_prospect:
+                        partner.is_prospect = True
+                    elif partner.sale_order_count != 0 and partner.is_prospect:
+                        partner.is_prospect = False
+                    done += partner
+                elif partner.parent_id in done:
+                    partner.is_prospect = partner.parent_id.is_prospect
+                    done += partner
+                else:
+                    todo += partner
+            partners = todo # update partners list
+            todo = self.env['res.partner'] # refresh todo list
 
     def _compute_sale_order_count(self):
         """
