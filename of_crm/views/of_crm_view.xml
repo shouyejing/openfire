@@ -225,10 +225,12 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <div class="o_row">
-                    <field name="is_prospect" invisible="1"/>
-                    <div class="label label-info" attrs="{'invisible': [('is_prospect', '=', False)]}">Prospect</div>
-                </div>
+                <xpath expr="//form//div[@class='oe_title']//div[@class='o_row']" position="inside">
+                    <div class="label label-info" attrs="{'invisible': [('is_confirmed', '=', True)]}">Prospect</div>
+                </xpath>
+                <xpath expr="//form//notebook//page[@name='sales_purchases']//field[@name='customer']" position="after">
+                    <field name="is_confirmed" attrs="{'invisible': [('customer', '=', False)]}"/>
+                </xpath>
             </field>
         </record>
 
@@ -239,10 +241,40 @@
             <field name="inherit_id" ref="base.res_partner_kanban_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//kanban//field[@name='type']" position="after">
-                    <field name="is_prospect"/>
+                    <field name="is_confirmed"/>
                 </xpath>
                 <xpath expr="//kanban//templates//strong[@class='oe_partner_heading']" position="after">
-                    <div t-if="record.is_prospect.raw_value == true" class="label label-info">prospect</div>
+                    <div t-if="record.is_confirmed.raw_value == false" class="label label-info">prospect</div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="of_crm_view_partner_tree" model="ir.ui.view">
+            <field name="name">of.crm.res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside">
+                    <field name="is_confirmed" invisible="1"/>
+                </xpath>
+                <!--prospects en bleu clair -->
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="colors">#5bc0de: is_confirmed==False;</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="of_geolocalize.of_view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <!-- filtres prospects et signés -->
+                <xpath expr="//search//filter[@name='not_localized']" position="before">
+                    <filter string="Clients signés" name="confirmed" domain="[('customer','=',1), ('parent_id', '=', False), ('is_confirmed', '=', True)]"/>
+                    <filter string="Prospects" name="lead" domain="[('customer','=',1), ('parent_id', '=', False), ('is_confirmed', '=', False)]"/>
+                    <separator/>
                 </xpath>
             </field>
         </record>

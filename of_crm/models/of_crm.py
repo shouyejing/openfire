@@ -3,8 +3,9 @@
 import time
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
-class Lead(models.Model):
+class OFCRMLead(models.Model):
     _inherit = 'crm.lead'
 
     of_website = fields.Char('Site web', help="Website of Lead")
@@ -25,7 +26,7 @@ class Lead(models.Model):
     # Récupération du site web à la sélection du partenaire
     # Pas de api.onchange parceque crm.lead._onchange_partner_id_values
     def _onchange_partner_id_values(self, partner_id):
-        res = super(Lead, self)._onchange_partner_id_values(partner_id)
+        res = super(OFCRMLead, self)._onchange_partner_id_values(partner_id)
 
         if partner_id:
             partner = self.env['res.partner'].browse(partner_id)
@@ -44,7 +45,7 @@ class Lead(models.Model):
             :param parent_id : id of the parent partner (False if no parent)
             :returns res.partner record
         """
-        partner = super(Lead, self)._lead_create_contact(name, is_company, parent_id=parent_id)
+        partner = super(OFCRMLead, self)._lead_create_contact(name, is_company, parent_id=parent_id)
         if self.of_website:
             partner.website = self.of_website
         if self.geo_lat:
@@ -61,7 +62,7 @@ class Lead(models.Model):
             if args[pos][0] == 'zip' and args[pos][1] in ('like', 'ilike') and args[pos][2]:
                 args[pos] = ('zip', '=like', args[pos][2]+'%')
             pos += 1
-        return super(Lead, self).search(args, offset=offset, limit=limit, order=order, count=count)
+        return super(OFCRMLead, self).search(args, offset=offset, limit=limit, order=order, count=count)
 
     @api.multi
     def action_set_lost(self):
@@ -78,7 +79,7 @@ class Lead(models.Model):
 
     @api.multi
     def action_set_won(self):
-        res = super(Lead,self).action_set_won()
+        res = super(OFCRMLead,self).action_set_won()
         for lead in self:
             lead.of_date_cloture = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
         return res
@@ -145,64 +146,43 @@ class Team(models.Model):
 class OFCRMResPartner(models.Model):
     _inherit = 'res.partner'
 
-    is_prospect = fields.Boolean(string="Est un prospect")
+    is_confirmed = fields.Boolean(string="Client signé", help="""
+Champ uniquement valable pour les partenaires clients.
+Un client est considéré comme prospect tant qu'il n'a ni commande confirmée ni facture validée.
+Ce champ se met à jour automatiquement sur confirmation de commande et sur validation de facture
+    """)
     #prospects_inited = False
-    #sale_order_components = self.filtered(lambda move: move.product_id.expense_policy == 'no').mapped('procurement_id.sale_comp_id') # bug mal initialisé sale_comp_id?
 
     @api.model
     def _init_prospects(self):
         customers = self.search([('customer','=',True)])
-        customers._compute_sale_order_count()
+        customers._compute_sale_order_count() # needed (because store=False computed field?)
         todo = self.search([('customer','=',True),'|',('parent_id','=', False),('company_type','=','company')]) # all customers without parent
         done = self.env['res.partner']
-        length = len(customers)
-        
+        len_customers = len(customers)
         while len(todo) > 0:
             partner = todo[0]
             todo -= todo[0]
             if not partner.parent_id:
-                if partner.sale_order_count == 0 and not partner.is_prospect:
-                    partner.is_prospect = True
-                elif partner.sale_order_count != 0 and partner.is_prospect:
-                    partner.is_prospect = False
+                if (partner.sale_order_count == 0 or partner.total_invoiced == 0) and partner.is_confirmed:
+                    partner.is_confirmed = False
+                elif (partner.sale_order_count != 0 or partner.total_invoiced > 0) and not partner.is_confirmed:
+                    partner.is_confirmed = True
                 done += partner
             else:
-                print 'parent name: ', partner.parent_id.name
-                partner.is_prospect = partner.parent_id.is_prospect
+                partner.is_confirmed = partner.parent_id.is_confirmed
                 done += partner
             if len(partner.child_ids) > 0:
-                print 'name: ',partner.name
-                print 'children ids: ',partner.child_ids._ids
                 todo += partner.child_ids # add children to todo list
-        if len(done) == length:
-            print 'done!'
-        else:
-            print 'error!'
-
-    @api.model
-    def _init_prospects_old(self):
-        partners = self.search([('customer','=',True)])
-        partners._compute_sale_order_count()
-        todo = self.env['res.partner']
-        done = self.env['res.partner']
-        length = len(partners)
-        while len(done) <= length:
-            while len(partners) > 0:
-                partner = partners[len(partners)-1]
-                partners -= partners[len(partners)-1]
-                if not partner.parent_id:
-                    if partner.sale_order_count == 0 and not partner.is_prospect:
-                        partner.is_prospect = True
-                    elif partner.sale_order_count != 0 and partner.is_prospect:
-                        partner.is_prospect = False
-                    done += partner
-                elif partner.parent_id in done:
-                    partner.is_prospect = partner.parent_id.is_prospect
-                    done += partner
-                else:
-                    todo += partner
-            partners = todo # update partners list
-            todo = self.env['res.partner'] # refresh todo list
+        len_done = len(done)
+        if len_customers != len_done: # not all partners have been processed
+            """not_done = customers - done
+            print "not done partners", not_done._ids
+            for partner in not_done:
+                print partner.name, partner.parent_id and partner.parent_id.name
+            print "ERROR" """
+            raise ValidationError(u"Erreur d'initialisation du champ 'is_confirmed'. Certains clients n'ont pas été traités (%s/%s)" % (len_customers - len_done,len_customers,))
+        print "Prospects configurés"
 
     def _compute_sale_order_count(self):
         """
@@ -219,13 +199,35 @@ surcharge méthode du même nom pour ne pas compter les devis dans les ventes
             partner_ids = filter(lambda r: r['id'] == partner.id, partner_child_ids)[0]
             partner_ids = [partner_ids.get('id')] + partner_ids.get('child_ids')
             # then we can sum for all the partner's child
-            #added is_prospect
+            #added is_confirmed
             sale_order_count = sum(mapped_data.get(child, 0) for child in partner_ids)
             partner.sale_order_count = sale_order_count
-            """if sale_order_count == 0:
-                partner.is_prospect = True
-            else:
-                partner.is_prospect = False"""
 
 class OFCRMSaleOrder(models.Model):
     _inherit = 'sale.order'
+
+    @api.multi
+    def action_confirm(self):
+        """
+un prospect devient signé sur confirmation de commande
+        """
+        res = super(OFCRMSaleOrder,self).action_confirm()
+        partners = self.env['res.partner']
+        for order in self:
+            if not order.partner_id.is_confirmed and order.partner_id not in partners:
+                partners += order.partner_id
+        partners.write({'is_confirmed': True})
+        return res
+
+class OFCRMAccountInvoice(models.Model):
+    _inherit = 'account.invoice'
+
+    @api.multi
+    def invoice_validate(self):
+        res = super(OFCRMAccountInvoice,self).invoice_validate()
+        partners = self.env['res.partner']
+        for invoice in self:
+            if not invoice.partner_id.is_confirmed and invoice.partner_id not in partners and invoice.partner_id.customer:
+                partners += invoice.partner_id
+        partners.write({'is_confirmed': True})
+        return res
