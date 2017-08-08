@@ -125,7 +125,23 @@
                 </xpath>-->
                 <xpath expr="//form//sheet//notebook" position="inside">
                     <page name="project" string="Projet">
-                        <field name="of_description_projet"/>
+                        <group>
+                            <field name="of_modele_id" widget="selection"/>
+                        </group>
+                        <label for="of_projet_line_ids"/>
+                        <field name="of_projet_line_ids" mode="kanban">
+                            <form>
+                                <group>
+                                    <field name="type" invisible="1"/>
+                                    <field name="attr_id" widget="selection"/>
+                                    <field name="name"/>
+                                    <field name="val_bool" attrs="{'invisible': [('type','!=','bool')]}"/>
+                                    <field name="val_date" attrs="{'invisible': [('type','!=','date')]}"/>
+                                    <field name="val_char" attrs="{'invisible': [('type','!=','char')]}"/>
+                                    <field name="val_select_id" attrs="{'invisible': [('type','!=','selection')]}" domain="[('attr_id','=',attr_id)]"/>
+                                </group>
+                            </form>
+                        </field>
                     </page>
                 </xpath>
                 <xpath expr="//form//sheet//notebook" position="inside">

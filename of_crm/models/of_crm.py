@@ -20,8 +20,27 @@ class OFCRMLead(models.Model):
     geo_lat = fields.Float(string='Geo Lat', digits=(8, 8))
     geo_lng = fields.Float(string='Geo Lng', digits=(8, 8))
     stage_probability = fields.Float(related="stage_id.probability",readonly=True)
+    #of_projet_id = fields.Many2one('of.crm.projet', string="Fiche projet")
+    of_projet_line_ids = fields.One2many('of.crm.projet.line', 'lead_id', string=u'Entrées')
+    of_modele_id = fields.Many2one('of.crm.projet.modele', string=u"Modèle")
 
     #activity_ids = fields.One2many('of.crm.opportunity.activity', 'lead_id', string=u"Activités de cette opportunité")
+
+    @api.onchange('of_modele_id')
+    def _onchange_modele_id(self):
+        for projet in self:
+            if projet.of_modele_id:
+                projet.of_projet_line_ids = [(5,)]
+                attr_vals = {}
+                vals = []
+                #print projet.modele_id.attr_ids
+                for attr in projet.of_modele_id.attr_ids:
+                    attr_vals['attr_id'] = attr.id
+                    attr_vals['type'] = attr.type
+                    attr_vals['name'] = attr.name
+                    vals.append((0,0,attr_vals.copy()))
+                    #print 'vals', vals
+                projet.of_projet_line_ids = vals
 
     # Récupération du site web à la sélection du partenaire
     # Pas de api.onchange parceque crm.lead._onchange_partner_id_values
@@ -164,13 +183,16 @@ Ce champ se met à jour automatiquement sur confirmation de commande et sur vali
             partner = todo[0]
             todo -= todo[0]
             if not partner.parent_id:
-                if (partner.sale_order_count == 0 or partner.total_invoiced == 0) and partner.is_confirmed:
+                # nothing sold and nothing invoiced -> this is a lead
+                if (partner.sale_order_count == 0 and partner.total_invoiced == 0) and partner.is_confirmed:
                     partner.is_confirmed = False
+                # something sold or something invoiced -> this is a confirmed customer!
                 elif (partner.sale_order_count != 0 or partner.total_invoiced > 0) and not partner.is_confirmed:
                     partner.is_confirmed = True
                 done += partner
             else:
-                partner.is_confirmed = partner.parent_id.is_confirmed
+                if (partner.sale_order_count != 0 or partner.total_invoiced > 0) and not partner.is_confirmed or partner.parent_id.is_confirmed:
+                    partner.is_confirmed = True
                 done += partner
             if len(partner.child_ids) > 0:
                 todo += partner.child_ids # add children to todo list

@@ -14,6 +14,7 @@ Module OpenFire pour le CRM Odoo
  - Recherche du code postal par préfixe.
  - Retrait du filtre de recherche par défaut dans la vue "Mon pipeline".
  - changement méthode de calcul du nombre de ventes client -> ne prend plus en compte que les ventes confirmées (et non les devis)
+ - Ajout fiche de projet dynamique
 """,
     'depends' : [
         'crm',
@@ -22,6 +23,7 @@ Module OpenFire pour le CRM Odoo
     ],
     'data' : [
         'views/of_crm_view.xml',
+        'views/of_crm_projet_view.xml',
         'data/data.xml',
     ],
     'installable': True,
